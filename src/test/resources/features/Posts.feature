@@ -1,8 +1,9 @@
+@Posts
 Feature: Test Posts Rest API
   Users should be able to submit a Post and retrieve the Post also be able to comment on a Post.
 
   Scenario: User should be  able to create Post
-    When users submit a post
+    When user submit a post
     Then the server should create the post
 
   Scenario: User should be able to get the post by id
@@ -11,4 +12,4 @@ Feature: Test Posts Rest API
 
   Scenario: User should be able to list all posts
     When user request all posts
-    Then the result contains all the posts in the system
+    Then the result contains the newly created post in the system
