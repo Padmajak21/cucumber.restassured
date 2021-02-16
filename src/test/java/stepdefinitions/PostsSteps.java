@@ -2,6 +2,7 @@ package stepdefinitions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.javafaker.Faker;
 import com.rits.cloning.Cloner;
 
 import io.cucumber.java.en.Then;
@@ -16,21 +17,14 @@ import utils.TestUtils;
 public class PostsSteps {
 
 	Response response;
-	private Post newPost;
-	private Post[] allPosts;
-	
-	{
-		RestAssured.baseURI = "http://localhost";
-	    RestAssured.port = 3000;
-	}
 	
 	@When("user submit a post")
 	public void users_submit_a_post() {
-		System.out.println("3. implement submit .... ");
-		newPost = TestUtils.createADummyPost();
-		response = RestAssured.given().contentType(ContentType.JSON)
-		.body(newPost)
-		.post("/posts");
+		Post newPost = TestUtils.createADummyPost(); 
+		 response = RestAssured.given()
+				 .contentType(ContentType.JSON) 
+				 .body(newPost)
+		 .post("/posts");
 	}
 
 	@Then("the server should create the post")
@@ -38,12 +32,11 @@ public class PostsSteps {
 		response
 		.then()
 		.assertThat().statusCode(201);
-		//get the id created in the Post and set back to newPost
-		var createdId = response.getBody().jsonPath().getInt("id");
-		newPost.setId(createdId);
+		
+		Post createdPost = response.as(Post.class);
 		
 		Cloner cloner=new Cloner();
-		Post clonedPost=cloner.deepClone(newPost);
+		Post clonedPost=cloner.deepClone(createdPost);
 		ContextHolder.createdPost = clonedPost;
 	}
 
@@ -67,7 +60,7 @@ public class PostsSteps {
 		.get("/posts");
 	}
 
-	@Then("the result contains the newly created post in the system")
+	@Then("the result contains all posts including the newly created post")
 	public void the_result_contains_all_the_posts_in_the_system() {
 		var posts = response.body().jsonPath().getList("", Post.class);
 		assertThat(posts.get(posts.size()-1)).usingRecursiveComparison().isEqualTo(ContextHolder.createdPost);

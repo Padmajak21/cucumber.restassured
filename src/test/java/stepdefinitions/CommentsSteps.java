@@ -5,7 +5,7 @@ import io.cucumber.java.en.When;
 
 public class CommentsSteps {
 
-@When("user comment on a post")
+@When("user commented on a post")
 public void user_comment_on_a_post() {
     // Write code here that turns the phrase above into concrete actions
    // throw new io.cucumber.java.PendingException();
